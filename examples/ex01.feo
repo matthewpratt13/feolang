@@ -1,0 +1,8 @@
+/* 
+let foo: String = "bar";
+*/
+let baz: int = 1; // hello
+let foo: float = 0.1;
+let bar: char = 'a';
+const baz: bool = true;
+const foo: String = "Hello";
