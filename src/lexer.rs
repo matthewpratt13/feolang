@@ -1,5 +1,4 @@
 use feolang::error::{ErrorId, FeoError};
-use std::path::Path;
 use token::{TokType, Token};
 
 mod token;
@@ -45,6 +44,7 @@ pub(crate) fn lex(file: &String, path: &'static Path) -> Option<Vec<Vec<Token>>>
         line_num += 1;
     }
 
+    println!("{:?}", tokens);
     Some(tokens)
 }
 
