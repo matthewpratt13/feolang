@@ -7,7 +7,7 @@ mod tests {
     use std::path::Path;
 
     #[test]
-    fn it_reads_a_file() {
+    fn lexer_works() {
         let path = Path::new("./examples/ex01.feo");
         let file = match std::fs::read_to_string(path) {
             Ok(f) => f,

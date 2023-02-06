@@ -111,39 +111,47 @@ fn tokenize_line(
                 let start_index: usize = i;
                 let alpha = get_alpha(chars, line_num, line_len, i, path).unwrap();
                 let tok_type: TokType = match alpha.as_str() {
-                    "const" => TokType::TConst,
-                    "let" => TokType::TLet,
-                    "var" => TokType::TVar,
-                    "bool" => TokType::TBool,
-                    "char" => TokType::TChar,
-                    "int" => TokType::TInt,
-                    "float" => TokType::TFloat,
-                    "String" => TokType::TString,
-                    "false" => TokType::TBoolLit(false),
-                    "true" => TokType::TBoolLit(true),
-                    "alias" => TokType::TKeyword("alias"),
-                    "as" => TokType::TKeyword("as"),
-                    "break" => TokType::TKeyword("break"),
-                    "class" => TokType::TKeyword("class"),
-                    "continue" => TokType::TKeyword("continue"),
-                    "else" => TokType::TKeyword("else"),
-                    "enum" => TokType::TKeyword("enum"),
-                    "for" => TokType::TKeyword("for"),
-                    "func" => TokType::TKeyword("func"),
-                    "if" => TokType::TKeyword("if"),
-                    "import" => TokType::TKeyword("import"),
-                    "in" => TokType::TKeyword("in"),
-                    "interface" => TokType::TKeyword("interface"),
-                    "loop" => TokType::TKeyword("loop"),
-                    "match" => TokType::TKeyword("match"),
-                    "new" => TokType::TKeyword("new"),
-                    "None" => TokType::TKeyword("None"),
-                    "public" => TokType::TKeyword("public"),
-                    "self" => TokType::TKeyword("self"),
-                    "static" => TokType::TKeyword("static"),
-                    "struct" => TokType::TKeyword("struct"),
-                    "return" => TokType::TKeyword("return"),
-                    "while" => TokType::TKeyword("while"),
+                    "abstract" => TokType::KW_ABSTRACT,
+                    "alias" => TokType::KW_ALIAS,
+                    "as" => TokType::KW_AS,
+                    "bool" => TokType::KW_BOOL,
+                    "break" => TokType::KW_BREAK,
+                    "char" => TokType::KW_CHAR,
+                    "class" => TokType::KW_CLASS,
+                    "const" => TokType::KW_CONST,
+                    "continue" => TokType::KW_CONTINUE,
+                    "else" => TokType::KW_ELSE,
+                    "enum" => TokType::KW_ENUM,
+                    "extern" => TokType::KW_EXTERN,
+                    "false" => TokType::LIT_BOOL(false),
+                    "final" => TokType::KW_FINAL,
+                    "float" => TokType::KW_FLOAT,
+                    "for" => TokType::KW_FOR,
+                    "func" => TokType::KW_FUNC,
+                    "if" => TokType::KW_IF,
+                    "import" => TokType::KW_IMPORT,
+                    "int" => TokType::KW_INT,
+                    "is" => TokType::KW_IS,
+                    "let" => TokType::KW_LET,
+                    "lib" => TokType::KW_LIB,
+                    "loop" => TokType::KW_LOOP,
+                    "match" => TokType::KW_MATCH,
+                    "new" => TokType::KW_NEW,
+                    "override" => TokType::KW_OVERRIDE,
+                    "protocol" => TokType::KW_PROTOCOL,
+                    "public" => TokType::KW_PUBLIC,
+                    "return" => TokType::KW_RETURN,
+                    "self" => TokType::KW_SELF,
+                    "static" => TokType::KW_STATIC,
+                    "String" => TokType::KW_STRING,
+                    "struct" => TokType::KW_STRUCT,
+                    "super" => TokType::KW_SUPER,
+                    "true" => TokType::LIT_BOOL(true),
+                    "type" => TokType::KW_TYPE,
+                    "uint" => TokType::KW_UINT,
+                    "var" => TokType::KW_VAR,
+                    "virtual" => TokType::KW_VIRTUAL,
+                    "while" => TokType::KW_WHILE,
                     "_" => {
                         let err = FeoError::new(
                             ErrorId::InvalidChar,
@@ -157,7 +165,7 @@ fn tokenize_line(
                         panic!("{}", err);
                     }
 
-                    _ => TokType::TIden(alpha.clone()),
+                    _ => TokType::IDEN(alpha.clone()),
                 };
 
                 i += alpha.len();
@@ -198,7 +206,7 @@ fn tokenize_line(
                         panic!("{}", err);
                     }
 
-                    _ => TokType::TIntLit(i32::from_str_radix(hex.as_str(), 16).unwrap()),
+                    _ => TokType::LIT_INT(i32::from_str_radix(hex.as_str(), 16).unwrap()),
                 };
 
                 if is_negative_number {
@@ -224,8 +232,8 @@ fn tokenize_line(
 
                 let num = get_num(chars, line_num, line_len, i, is_negative_number, path).unwrap();
                 let tok_type: TokType = match num {
-                    _ if num.contains('.') => TokType::TFltLit(num.parse::<f64>().unwrap()),
-                    _ => TokType::TIntLit(num.parse::<i32>().unwrap()),
+                    _ if num.contains('.') => TokType::LIT_FLOAT(num.parse::<f64>().unwrap()),
+                    _ => TokType::LIT_INT(num.parse::<i32>().unwrap()),
                 };
 
                 if is_negative_number {
@@ -251,9 +259,9 @@ fn tokenize_line(
 
                 let lit = get_text_literal(chars, line_num, line_len, i, path).unwrap();
                 let tok_type: TokType = match chars[start_index] {
-                    '\'' => TokType::TCharLit(lit.parse::<char>().unwrap()),
-                    '"' => TokType::TStrLit(lit.to_owned()),
-                    _ => TokType::TInvalid(chars[start_index]),
+                    '\'' => TokType::LIT_CHAR(lit.parse::<char>().unwrap()),
+                    '"' => TokType::LIT_STRING(lit.to_owned()),
+                    _ => TokType::INVALID_CHAR(chars[start_index]),
                 };
 
                 i += &lit.len() + 1; // +1 to skip closing quote
@@ -275,14 +283,14 @@ fn tokenize_line(
                         let tok_type: TokType = match chars[i] {
                             _ if chars[i + 1] == '=' => {
                                 i += 1;
-                                TokType::TLogicalOp("==")
+                                TokType::OP_EQ
                             }
                             _ if chars[i + 1] == '>' => {
                                 i += 1;
-                                TokType::TFatArrow
+                                TokType::OP_FAT_ARW
                             }
 
-                            _ => TokType::TAssign,
+                            _ => TokType::OP_ASSIGN,
                         };
 
                         i += 1;
@@ -305,117 +313,117 @@ fn tokenize_line(
                     '+' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TArithmeticOp("+=")
+                            TokType::OP_PLUS_EQ
                         } else {
-                            TokType::TArithmeticOp("+")
+                            TokType::OP_PLUS
                         }
                     }
 
                     '-' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TArithmeticOp("-=")
+                            TokType::OP_MINUS_EQ
                         } else if chars[i + 1] == '>' {
                             i += 1;
-                            TokType::TThinArrow
+                            TokType::OP_THIN_ARW
                         } else {
-                            TokType::TArithmeticOp("-")
+                            TokType::OP_MINUS
                         }
                     }
 
                     '*' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TArithmeticOp("*=")
+                            TokType::OP_MULT_EQ
                         } else {
-                            TokType::TArithmeticOp("*")
+                            TokType::OP_MULT
                         }
                     }
 
                     '/' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TArithmeticOp("/=")
+                            TokType::OP_DIV_EQ
                         } else {
-                            TokType::TArithmeticOp("/")
+                            TokType::OP_DIV
                         }
                     }
 
                     '%' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TArithmeticOp("%=")
+                            TokType::OP_MOD_EQ
                         } else {
-                            TokType::TArithmeticOp("%")
+                            TokType::OP_MOD
                         }
                     }
 
                     '<' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TLogicalOp("<=")
+                            TokType::OP_LESS_EQ
                         } else {
-                            TokType::TLogicalOp("<")
+                            TokType::OP_LESS
                         }
                     }
 
                     '>' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TLogicalOp(">=")
+                            TokType::OP_GRTR_EQ
                         } else {
-                            TokType::TLogicalOp(">")
+                            TokType::OP_GRTR
                         }
                     }
 
                     '!' if i < line_len - 1 => {
                         if chars[i + 1] == '=' {
                             i += 1;
-                            TokType::TLogicalOp("!=")
+                            TokType::OP_NOT_EQ
                         } else {
-                            TokType::TLogicalOp("!")
+                            TokType::OP_BANG
                         }
                     }
 
                     '&' if i < line_len - 1 => {
                         if chars[i + 1] == '&' {
                             i += 1;
-                            TokType::TLogicalOp("&&")
+                            TokType::OP_AND
                         } else {
-                            TokType::TLogicalOp("&")
+                            TokType::OP_AMPERSAND
                         }
                     }
 
                     '|' if i < line_len - 1 => {
                         if chars[i + 1] == '|' {
                             i += 1;
-                            TokType::TLogicalOp("||")
+                            TokType::OP_OR
                         } else {
-                            TokType::TLogicalOp("|")
+                            TokType::OP_PIPE
                         }
                     }
 
-                    '?' => TokType::TLogicalOp("?"),
+                    '?' => TokType::OP_TERNARY,
 
-                    ';' => TokType::TSemicolon,
+                    ';' => TokType::PUNC_SEMICOLON,
 
-                    ':' => TokType::TColon,
+                    ':' => TokType::PUNC_COLON,
 
-                    ',' => TokType::TComma,
+                    ',' => TokType::PUNC_COMMA,
 
-                    '.' => TokType::TDot,
+                    '.' => TokType::PUNC_DOT,
 
-                    '(' => TokType::TOpenParen,
+                    '(' => TokType::PUNC_OPEN_PAREN,
 
-                    ')' => TokType::TCloseParen,
+                    ')' => TokType::PUNC_CLS_PAREN,
 
-                    '[' => TokType::TOpenBracket,
+                    '[' => TokType::PUNC_OPEN_SQ_BKT,
 
-                    ']' => TokType::TCloseBracket,
+                    ']' => TokType::PUNC_CLS_SQ_BKT,
 
-                    '{' => TokType::TOpenBrace,
+                    '{' => TokType::PUNC_OPEN_CRL_BRC,
 
-                    '}' => TokType::TCloseBrace,
+                    '}' => TokType::PUNC_CLS_CRL_BRC,
 
                     '\\' => {
                         let err = FeoError::new(
@@ -430,7 +438,7 @@ fn tokenize_line(
                         panic!("{}", err);
                     }
 
-                    _ => TokType::TInvalid(chars[i]),
+                    _ => TokType::INVALID_CHAR(chars[i]),
                 };
 
                 let tok = Token::new(tok_type, line_num, start_index + 1);
@@ -439,7 +447,7 @@ fn tokenize_line(
             }
 
             _ => {
-                tokens.push(Token::new(TokType::TInvalid(chars[i]), line_num, i + 1));
+                tokens.push(Token::new(TokType::INVALID_CHAR(chars[i]), line_num, i + 1));
                 tok_i += 1;
             }
         }
@@ -721,4 +729,3 @@ fn make_comment_true() {
 fn make_comment_false() {
     unsafe { COMMENT_BLOCK = false }
 }
-
