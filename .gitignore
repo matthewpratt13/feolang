@@ -1,2 +1,13 @@
-/target
-/.vscode
+# build files
+**/target/
+**/debug/
+
+# rustfmt backup files
+**/*.rs.bk
+
+# locally generated IDE config files
+.idea/
+.vscode/
+
+# macOS-specific files
+**/.DS_Store

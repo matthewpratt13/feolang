@@ -1,4 +1,5 @@
-use feolang::error::{ErrorId, FeoError};
+use crate::error::{ErrorId, FeoError};
+use std::path::Path;
 use token::{TokType, Token};
 
 mod token;
@@ -14,7 +15,7 @@ static mut COMMENT_BLOCK: bool = false;
 /// * `file` - the contents of the file
 /// * `path` - a reference to the location of the file in memory
 ///
-pub(crate) fn lex(file: &String, path: &'static Path) -> Option<Vec<Vec<Token>>> {
+pub fn lex(file: &String, path: &'static Path) -> Option<Vec<Vec<Token>>> {
     let mut tokens: Vec<Vec<Token>> = Vec::new();
     let mut line_num: usize = 1;
 
@@ -44,7 +45,6 @@ pub(crate) fn lex(file: &String, path: &'static Path) -> Option<Vec<Vec<Token>>>
         line_num += 1;
     }
 
-    println!("{:?}", tokens);
     Some(tokens)
 }
 
@@ -721,3 +721,4 @@ fn make_comment_true() {
 fn make_comment_false() {
     unsafe { COMMENT_BLOCK = false }
 }
+
