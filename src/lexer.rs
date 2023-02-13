@@ -29,7 +29,7 @@ pub fn lex(file: &String, path: &'static Path) -> Option<Vec<Vec<Token>>> {
             Ok(l) => l,
             Err(_) => {
                 let err = FeoError::new(
-                    ErrorId::InvalidData,
+                    ErrorId::ERR_INVALID_DATA,
                     None,
                     path,
                     line_num,
@@ -78,7 +78,7 @@ fn tokenize_line(
             _ if chars[i] == '*' && chars[i + 1] == '/' => {
                 if unsafe { COMMENT_BLOCK == false } {
                     let err: FeoError = FeoError::new(
-                        ErrorId::InvalidChar,
+                        ErrorId::ERR_INVALID_CHAR,
                         Some('*'),
                         path,
                         line_num,
@@ -154,7 +154,7 @@ fn tokenize_line(
                     "while" => TokType::KW_WHILE,
                     "_" => {
                         let err = FeoError::new(
-                            ErrorId::InvalidChar,
+                            ErrorId::ERR_INVALID_CHAR,
                             Some('_'),
                             path,
                             line_num,
@@ -195,7 +195,7 @@ fn tokenize_line(
                 let tok_type: TokType = match hex {
                     _ if hex.contains('.') => {
                         let err = FeoError::new(
-                            ErrorId::InvalidChar,
+                            ErrorId::ERR_INVALID_CHAR,
                             Some('.'),
                             path,
                             line_num,
@@ -427,7 +427,7 @@ fn tokenize_line(
 
                     '\\' => {
                         let err = FeoError::new(
-                            ErrorId::InvalidChar,
+                            ErrorId::ERR_INVALID_CHAR,
                             Some('\\'),
                             path,
                             line_num,
@@ -490,7 +490,7 @@ fn get_alpha(
 
     if buf.is_empty() {
         let err = FeoError::new(
-            ErrorId::InvalidChar,
+            ErrorId::ERR_INVALID_CHAR,
             None,
             path,
             line_num,
@@ -540,7 +540,7 @@ fn get_num(
 
         if chars[i] == '.' && buf.contains('.') {
             let err = FeoError::new(
-                ErrorId::InvalidChar,
+                ErrorId::ERR_INVALID_CHAR,
                 Some('.'),
                 path,
                 line_num,
@@ -557,7 +557,7 @@ fn get_num(
 
     if buf.is_empty() {
         let err = FeoError::new(
-            ErrorId::InvalidChar,
+            ErrorId::ERR_INVALID_CHAR,
             None,
             path,
             line_num,
@@ -609,7 +609,7 @@ fn get_hex(
 
         if chars[i] == '.' && buf.contains('.') {
             let err = FeoError::new(
-                ErrorId::InvalidChar,
+                ErrorId::ERR_INVALID_CHAR,
                 Some('.'),
                 path,
                 line_num,
@@ -626,7 +626,7 @@ fn get_hex(
 
     if buf.is_empty() {
         let err = FeoError::new(
-            ErrorId::InvalidChar,
+            ErrorId::ERR_INVALID_CHAR,
             None,
             path,
             line_num,
@@ -676,7 +676,7 @@ fn get_text_literal(
 
     if chars[i] != quote_type {
         let err = FeoError::new(
-            ErrorId::InvalidChar,
+            ErrorId::ERR_INVALID_CHAR,
             Some(quote_type),
             path,
             line_num,
@@ -690,7 +690,7 @@ fn get_text_literal(
     if quote_type == '\'' {
         if buf.is_empty() {
             let err = FeoError::new(
-                ErrorId::InvalidChar,
+                ErrorId::ERR_INVALID_CHAR,
                 None,
                 path,
                 line_num,
@@ -703,7 +703,7 @@ fn get_text_literal(
 
         if buf.len() > 1 {
             let err = FeoError::new(
-                ErrorId::InvalidChar,
+                ErrorId::ERR_INVALID_CHAR,
                 None,
                 path,
                 line_num,

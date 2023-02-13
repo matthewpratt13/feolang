@@ -155,11 +155,11 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(tok_type: TokType, _line: usize, _col: usize) -> Token {
-        Token {
+    pub fn new(tok_type: TokType, line: usize, col: usize) -> Self {
+        Self {
             tok_type,
-            _line,
-            _col,
+            _line: line,
+            _col: col,
         }
     }
 

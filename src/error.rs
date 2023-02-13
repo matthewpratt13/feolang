@@ -55,18 +55,19 @@ impl fmt::Display for ErrorInfo {
 impl Error for ErrorInfo {}
 
 #[derive(Debug)]
+#[allow(non_camel_case_types)]
 pub enum ErrorId {
-    InvalidChar,
-    InvalidData,
-    Unknown,
+    ERR_INVALID_CHAR,
+    ERR_INVALID_DATA,
+    ERR_UNKNOWN,
 }
 
 impl fmt::Display for ErrorId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
-            ErrorId::InvalidChar => write!(f, "invalid character"),
-            ErrorId::InvalidData => write!(f, "invalid data"),
-            ErrorId::Unknown => write!(f, "unknown error"),
+            ErrorId::ERR_INVALID_CHAR => write!(f, "Invalid character"),
+            ErrorId::ERR_INVALID_DATA => write!(f, "Invalid data"),
+            ErrorId::ERR_UNKNOWN => write!(f, "Unknown error"),
         }
     }
 }
